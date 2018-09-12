@@ -17,7 +17,7 @@ with open("Dataset-film-data.csv") as f:
 				data[k]["genre"] = value
 
 			counter += 1
-r1 = []
+			
 genre = []
 
 for k, v in data.items():
@@ -46,13 +46,3 @@ plt.figure()
 plt.bar(x, y)
 plt.title('Avg. Rating Website 1')
 plt.show()
-
-
-
-
-
-
-
-
-
-
