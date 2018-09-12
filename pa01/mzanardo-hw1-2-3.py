@@ -17,15 +17,42 @@ with open("Dataset-film-data.csv") as f:
 				data[k]["genre"] = value
 
 			counter += 1
-
 r1 = []
+genre = []
 
 for k, v in data.items():
 	for key, value in data[k].items():
-		if key == "r1":
-			r1.append(value)
+		if key == "genre":
+			genre.append(value)
+
+g = {}
+
+for i in genre:
+	g[i] = []
+
+for k, v in data.items():
+	genre = data[k]["genre"]
+	g[genre].append(float(data[k]["r1"]))
+
+x = []
+y = []
+
+for k, v in g.items():
+	x.append(k)
+	avg = sum(g[k]) / len(g[k])
+	y.append(avg)
 
 plt.figure()
-plt.boxplot(np.array(r1).astype(np.float))
+plt.bar(x, y)
 plt.title('Avg. Rating Website 1')
 plt.show()
+
+
+
+
+
+
+
+
+
+

@@ -18,14 +18,15 @@ with open("Dataset-film-data.csv") as f:
 
 			counter += 1
 
-r1 = []
+r3 = []
 
 for k, v in data.items():
 	for key, value in data[k].items():
-		if key == "r1":
-			r1.append(value)
+		if key == "r3":
+			r3.append(value)
+
 
 plt.figure()
-plt.boxplot(np.array(r1).astype(np.float))
-plt.title('Avg. Rating Website 1')
+plt.hist(np.array(r3).astype(np.float), 10)
+plt.title('Avg. Rating Website 3')
 plt.show()
