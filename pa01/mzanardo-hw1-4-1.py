@@ -23,8 +23,20 @@ A = normalize(D, axis=0)
 C = np.dot(A.T, A)
 eigenValues,eigenVectors = LA.eigh(C)
 
-eigenValues = eigenValues[:k]
-eigenVectors = eigenVectors[:,:k]
+eigenValues = eigenValues[::-1]
+eigenVectors = eigenVectors[:,::-1]
 
-print(np.around(eigenValues,2))
-print(np.around(eigenVectors,2))
+#print(np.around(eigenValues,2))
+#print(np.around(eigenVectors,2))
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+
+for i in range(0, 5):
+	ax.scatter(eigenVectors[i][0], eigenVectors[i][1], c="blue")
+
+plt.title('First 2 Principal Components')
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+#plt.legend(loc=2)
+plt.show()

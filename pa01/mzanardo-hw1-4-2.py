@@ -20,7 +20,19 @@ with open("Dataset-film-data.csv") as f:
 
 D = np.array(data)
 A = normalize(D, axis=0)
-U, S, V = svds(A, k = 3)
-print(np.around(U, 2))
-print(np.around(S, 2))
-print(np.around(V, 2))
+U, S, V = svds(A, k = 2)
+#print(np.around(U, 2))
+#print(np.around(S, 2))
+#print(np.around(V, 2))
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+
+for i in range(0, len(U)):
+	ax.scatter(U[i][0], U[i][1], c="red")
+
+plt.title('First 2 Left-Singular Vectors')
+plt.xlabel("Singular Vector 1")
+plt.ylabel("Singular Vector 2")
+plt.legend(loc=2)
+plt.show()
