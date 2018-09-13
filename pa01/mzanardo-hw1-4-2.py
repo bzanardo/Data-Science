@@ -5,6 +5,7 @@ from sklearn.preprocessing import normalize
 from numpy import linalg as LA
 
 data = [[0 for x in range(5)] for y in range(150)]
+genre = []
 
 with open("Dataset-film-data.csv") as f:
 	next(f)
@@ -15,6 +16,8 @@ with open("Dataset-film-data.csv") as f:
 				k = int(value[1:])
 			elif counter < 5:
 				data[k - 1][counter - 1] = float(value)
+			else:
+				genre.append(value)
 
 			counter += 1
 
@@ -28,8 +31,18 @@ U, S, V = svds(A, k = 2)
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
+labels = {"ACTION\n" : {"color" : "red", "marker" : "o", "values" : {"x" : [], "y" : []}}, "COMEDY\n" : {"color" : "blue", "marker" : "v", "values" : {"x" : [], "y" : []}}, "ROMANCE\n" : {"color" : "green", "marker" : "s", "values" : {"x" : [], "y" : []}} }
+
 for i in range(0, len(U)):
-	ax.scatter(U[i][0], U[i][1], c="red")
+	labels[genre[i]]["values"]["x"].append(U[i][0])
+	labels[genre[i]]["values"]["y"].append(U[i][1])
+
+
+for k, v in labels.items():
+	l = k
+	for i in range(len(labels[k]["values"]["x"])):
+		ax.scatter(labels[k]["values"]["x"][i], labels[k]["values"]["y"][i], c=labels[k]["color"], label=l, marker=labels[k]["marker"])
+		l = "_nolegend_"
 
 plt.title('First 2 Left-Singular Vectors')
 plt.xlabel("Singular Vector 1")
