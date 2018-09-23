@@ -15,7 +15,11 @@ for line in f:
 			if feature == 2:
 				data[count]["Opponent"] = value
 			if feature == 3:
-				data[count]["H/A"] = value
+				if (value != "Home") and (value != "Away"):
+					data[count]["Opponent"] + value
+					feature -= 1
+				else:
+					data[count]["H/A"] = value	
 			if feature == 4:
 				data[count]["Top25"] = value
 			if feature == 5:
@@ -149,8 +153,68 @@ probLose = probMedia["ESPN"]["Lose"] / resultCount["Lose"]
 probMedia["ESPN"]["P(W)"] = probWin
 probMedia["ESPN"]["P(L)"] = probLose
 
-print(probMedia)
+# Test Data
 
+count = 24
+dataTest = {}
+
+f = open("Dataset-football-test.txt", "r")
+for line in f:
+	if count > 24:
+		dataTest[count] = {}
+		feature = 0
+		for value in line.split():
+			if feature == 1:
+				dataTest[count]["Date"] = value
+			if feature == 2:
+				dataTest[count]["Opponent"] = value
+			if feature == 3:
+				if (value != "Home") and (value != "Away"):
+					dataTest[count]["Opponent"] + value
+					feature -= 1
+				else:
+					dataTest[count]["H/A"] = value
+			if feature == 4:
+				dataTest[count]["Top25"] = value
+			if feature == 5:
+				dataTest[count]["Media"] = value
+			if feature == 6:
+				dataTest[count]["Result"] = value
+
+			feature += 1
+			
+	count += 1
+
+f.close()
+
+
+for k,v in dataTest.items():
+	featureHA = dataTest[k]["H/A"]
+	featureTop25 = dataTest[k]["Top25"]
+	featureMedia = dataTest[k]["Media"]
+
+	# Prob Win
+
+	winHA = probHA[featureHA]["P(W)"]
+	winTop25 = probTop25[featureTop25]["P(W)"]
+	winMedia = probMedia[featureMedia]["P(W)"]
+	probWin = resultCount["P(W)"]
+
+	finalProbWin = winHA * winTop25 * winMedia * probWin
+
+	# Prob Lose
+
+	loseHA = probHA[featureHA]["P(L)"]
+	loseTop25 = probTop25[featureTop25]["P(L)"]
+	loseMedia = probMedia[featureMedia]["P(L)"]
+	probLose = resultCount["P(L)"]
+
+	finalProbLose = loseHA * loseTop25 * loseMedia * probLose
+
+	if finalProbWin > finalProbLose:
+		print(str(k) + ": " + dataTest[k]["Opponent"] + ", Predicted: Win, Actual: " + dataTest[k]["Result"])
+	else:
+		print(str(k) + ": " + dataTest[k]["Opponent"] + ", Predicted: Lose, Actual: " + dataTest[k]["Result"])
 
 
 
