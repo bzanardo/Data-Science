@@ -131,6 +131,26 @@ def C4_5(data, indexedData, features, attribute = "Result"):
 	
 	return tree
 
+def predict(tree, data):
+	results = {}
+	
+	for key, value in data.items():
+		prediction = False
+		subtree = tree
+		feature = list(tree.keys())[0]
+		while prediction == False:
+			result = data[key][feature]
+			subtree = subtree[feature][result]
+			if (subtree == 'Win') or (subtree == 'Lose'):
+				results[key] = subtree
+				prediction = True
+				break
+			else :
+				feature = list(subtree.keys())[0]
+
+
+	return results
+
 
 # Load Training Data
 
@@ -188,7 +208,7 @@ for line in f:
 f.close()
 
 tree = C4_5(data, indexedData, features)
-print(tree)
+#print(tree)
 
 
 # Load Testing Data
@@ -220,7 +240,8 @@ for line in f:
 
 f.close()
 
-#predict(tree, dataTest)
+r = predict(tree, dataTest)
+print(r)
 
 
 

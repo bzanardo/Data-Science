@@ -120,19 +120,24 @@ def ID3(data, indexedData, features, attribute = "Result"):
 
 
 def predict(tree, data):
-	feature = list(tree.keys())[0]
 	results = {}
-	print(feature)
-
+	
 	for key, value in data.items():
-		for k, v in data[key].items():
-			if k == feature:
-				result = data[key][k]
-				subtree = tree[feature][result]
+		prediction = False
+		subtree = tree
+		feature = list(tree.keys())[0]
+		while prediction == False:
+			result = data[key][feature]
+			subtree = subtree[feature][result]
+			if (subtree == 'Win') or (subtree == 'Lose'):
+				results[key] = subtree
+				prediction = True
+				break
+			else :
 				feature = list(subtree.keys())[0]
-				print(subtree)
-				print(feature)
-			
+
+
+	return results
 			
 
 
@@ -192,7 +197,7 @@ for line in f:
 f.close()
 
 tree = ID3(data, indexedData, features)
-print(tree)
+#print(tree)
 
 
 # Load Testing Data
@@ -224,7 +229,8 @@ for line in f:
 
 f.close()
 
-predict(tree, dataTest)
+r = predict(tree, dataTest)
+print(r)
 
 
 
