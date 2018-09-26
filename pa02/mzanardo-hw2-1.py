@@ -197,7 +197,7 @@ for line in f:
 f.close()
 
 tree = ID3(data, indexedData, features)
-#print(tree)
+print(tree)
 
 
 # Load Testing Data
