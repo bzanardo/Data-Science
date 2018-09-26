@@ -52,6 +52,17 @@ def entropy(data, feature):
  
 	return data_entropy
 
+def splitInfo(data, feature):
+	values, count = np.unique(feature,return_counts = True)
+	split_info = 0
+	totalSum = np.sum(count)
+
+	for i in range(len(values)):
+		ratio = count[i] / totalSum
+		split_info += (-ratio * math.log(ratio,2))
+
+	return split_info
+
 
 def checkResult(indexedData):
 	wins = 0
@@ -69,7 +80,7 @@ def checkResult(indexedData):
 		return("Lose")
 
 
-def ID3(data, indexedData, features, attribute = "Result"):
+def C4_5(data, indexedData, features, attribute = "Result"):
 
 	if (len(features) == 0):
 		result = checkResult(indexedData)
@@ -77,19 +88,21 @@ def ID3(data, indexedData, features, attribute = "Result"):
 
 	else:
 
-		infoGains = {}
+		gainRatio = {}
 
-		for f in features:			# Calculate information gain
-			g = IG(data, indexedData, f, attribute)
-			infoGains[g] = f
+		for f in features:			# Calculate gain ratio
+			iGain = IG(data, indexedData, f, attribute)
+			sInfo = splitInfo(data, attribute)
+			gr = iGain / sInfo
+			gainRatio[gr] = f
 
-		largestGain = max(infoGains)
+		largestGainRatio = max(gainRatio)
 
-		if largestGain == 0:
+		if largestGainRatio == 0:
 			result = checkResult(indexedData)
 			return(result)
 
-		bestFeature = infoGains[largestGain]
+		bestFeature = gainRatio[largestGainRatio]
 
 		tree = {bestFeature : {}}
 
@@ -111,29 +124,12 @@ def ID3(data, indexedData, features, attribute = "Result"):
 								subset[key].append(value)
 
 
-			subtree = ID3(data, subData, updatedFeatures, "Result")
+			subtree = C4_5(data, subData, updatedFeatures, "Result")
 			tree[bestFeature][result] = subtree
 
 
 	
 	return tree
-
-
-def predict(tree, data):
-	feature = list(tree.keys())[0]
-	results = {}
-	print(feature)
-
-	for key, value in data.items():
-		for k, v in data[key].items():
-			if k == feature:
-				result = data[key][k]
-				subtree = tree[feature][result]
-				feature = list(subtree.keys())[0]
-				print(subtree)
-				print(feature)
-			
-			
 
 
 # Load Training Data
@@ -191,7 +187,7 @@ for line in f:
 
 f.close()
 
-tree = ID3(data, indexedData, features)
+tree = C4_5(data, indexedData, features)
 print(tree)
 
 
@@ -224,7 +220,7 @@ for line in f:
 
 f.close()
 
-predict(tree, dataTest)
+#predict(tree, dataTest)
 
 
 
