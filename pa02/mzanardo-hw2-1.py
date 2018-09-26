@@ -1,31 +1,36 @@
 import numpy as np
+import math
 
 def IG(data, indexedData, feature, givenClass):
 	uncondEntropy = entropy(indexedData, givenClass)
 	condEntropy = 0
 
-	#values,count = np.unique(data[feature],return_counts=True)
-	#totalSum = np.sum(count)
 	freq = {}
 	totalSum = 0
 	
 	for k, v in indexedData.items():
-		if data[k][feature] in values:
-			freq[data[k][feature]] += 1.0
+		if indexedData[k][feature] in freq:
+			freq[indexedData[k][feature]] += 1.0
 			totalSum += 1
 		else:
-			freq[data[k][feature]]  = 1.0
+			freq[indexedData[k][feature]]  = 1.0
 			totalSum += 1
 
 	subset = {}
 
-	for k, v in freq:
+	for k, v in freq.items():
+		#print(k)
 		prob = v / totalSum
+		subset = {}
 		for key, value in indexedData.items():
 			if indexedData[key][feature] == k:
 				subset[key] = value
 
 		condEntropy += prob * entropy(subset, givenClass)
+
+
+	#print(condEntropy)
+	#print(uncondEntropy)
 
 	ig = uncondEntropy - condEntropy
 
@@ -35,60 +40,90 @@ def IG(data, indexedData, feature, givenClass):
 def entropy(data, feature):
 	freq = {}
 	data_entropy = 0.0
+	totalSum = 0
 
 	for k, v in data.items():
 		if data[k][feature] in freq:
-			freq[data[k][feature]] += 1.0
+			freq[data[k][feature]] += 1
+			totalSum += 1
 		else:
-			freq[data[k][feature]]  = 1.0
+			freq[data[k][feature]]  = 1
+			totalSum += 1
  
+	#print(freq)
 	for k, f in freq.items():
-		data_entropy += (-f/len(data)) * np.log2(f/len(data)) 
+		ratio = f/totalSum
+		if ratio != 1:
+			data_entropy += (-ratio*math.log(ratio,2))
  
 	return data_entropy
+
+
+def checkResult(indexedData):
+	wins = 0
+	losses = 0
+	for k, v in indexedData.items():
+		for key, value in indexedData[k].items():
+			if key == "Result":
+				if value == "Win":
+					wins += 1
+				else:
+					losses += 1
+	if wins > losses:
+		return("Win")
+	else:
+		return("Lose")
 
 
 def ID3(data, indexedData, features, attribute = "Result", parentNode = None):
 
 	if (len(features) == 0):
-		return parentNode
+		result = checkResult(indexedData)
+		return(result)
 
-	infoGains = {}
+	else:
 
-	for f in features:			# Calculate information gain
-		g = IG(data, indexedData, f, attribute)
-		infoGains[g] = f
+		infoGains = {}
 
-	largestGain = max(infoGains)
-	if largestGain < 0:
-		return parentNode
+		for f in features:			# Calculate information gain
+			g = IG(data, indexedData, f, attribute)
+			infoGains[g] = f
 
-	bestFeature = infoGains[largestGain]
+		largestGain = max(infoGains)
 
-	parentNode = bestFeature
-	tree = {bestFeature : {}}
+		if largestGain == 0:
+			result = checkResult(indexedData)
+			return(result)
 
-	updatedFeatures = []		# Update features
-	for i in features:
-		if i != bestFeature:
-			updatedFeatures.append(i)
+		bestFeature = infoGains[largestGain]
 
-	splitData = []
-	for result in np.unique(data[bestFeature]):		# Split data
-		subData = {}
-		for k, v in indexedData.items():
-			if indexedData[k][bestFeature] == result:
-				subData[k] = {}
-				for key, value in indexedData[k].items():
-					if key != bestFeature:
-						subData[k][key] = value
+		parentNode = bestFeature
+		tree = {bestFeature : {}}
 
-		splitData.append(subData)
+		updatedFeatures = []		# Update features
+		for i in features:
+			if i != bestFeature:
+				updatedFeatures.append(i)
 
-		subtree = ID3(subData, subData, features, "Result", parentNode)
-		tree[bestFeature] = subtree
+		subset = {"H/A" : [], "Top25" : [], "Media" : [], "Result" : []}
+		for result in np.unique(data[bestFeature]):		# Split data
+			subData = {}
+			for k, v in indexedData.items():
+				if indexedData[k][bestFeature] == result:
+					subData[k] = {}
+					for key, value in indexedData[k].items():
+						if key == bestFeature:
+							if indexedData[k][key] == result:
+								subData[k] = v
+								subset[key].append(value)
 
-		return tree
+
+			subtree = ID3(data, subData, updatedFeatures, "Result", parentNode)
+			tree[bestFeature][result] = subtree
+
+
+	
+	return tree
 
 	    
 
@@ -146,8 +181,9 @@ for line in f:
 	count += 1
 
 f.close()
+#print(indexedData)
 
-
-ID3(data, indexedData, features)
+tree = ID3(data, indexedData, features)
+print(tree)
 
 
