@@ -26,14 +26,17 @@ eigenValues,eigenVectors = LA.eigh(C)
 eigenValues = eigenValues[::-1]
 eigenVectors = eigenVectors[:,::-1]
 
-#print(np.around(eigenValues,2))
-#print(np.around(eigenVectors,2))
+r = np.dot(A, np.transpose(eigenVectors[:2]));
+
+print(np.around(eigenValues,2))
+print(np.around(eigenVectors,2))
+print(r)
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
-for i in range(0, 5):
-	ax.scatter(eigenVectors[i][0], eigenVectors[i][1], c="blue")
+for i in range(0, 150):
+	ax.scatter(r[i][0], r[i][1], c="blue")
 
 plt.title('First 2 Principal Components')
 plt.xlabel("Principal Component 1")

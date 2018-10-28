@@ -24,9 +24,9 @@ with open("Dataset-film-data.csv") as f:
 D = np.array(data)
 A = normalize(D, axis=0)
 U, S, V = svds(A, k = 2)
-#print(np.around(U, 2))
-#print(np.around(S, 2))
-#print(np.around(V, 2))
+print(np.around(U, 2))
+print(np.around(S, 2))
+print(np.around(V, 2))
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
