@@ -105,18 +105,99 @@ while (changed == True):
 	cluster2Y = []
 
 
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+
+for i in range(len(cluster1X)):
+	ax.scatter(cluster1X[i], cluster1Y[i], c="r")
+
+for i in range(len(cluster2X)):
+	ax.scatter(cluster2X[i], cluster2Y[i], c="b")
 
 
-#print(cluster1X)
-#print(cluster1Y)
-#print(cluster2X)
-#print(cluster2Y)
+ax.scatter(cent1X, cent1Y, c="r", marker="x", label="Centroid Cluster 1")
+ax.scatter(cent2X, cent2Y, c="b", marker="x", label="Centroid Cluster 2")
 
-#print(clusters)
+plt.xlabel("Wins in 2015")
+plt.ylabel("Wins in 2017")
+plt.title("K-Means Clustering Centroids #1")
+plt.legend(loc=5)
+plt.show()
+
+cent1X = 7
+cent1Y = 7
+cent2X = 7
+cent2Y = 14
+
+cluster1X = []
+cluster1Y = []
+cluster2X = []
+cluster2Y = []
+
+clusters = [0] * 12
+changed = True
 
 
-#print("1: " + str(cent1X) + "," + str(cent1Y))
-#print("2: " + str(cent2X) + "," + str(cent2Y))
+while (changed == True):
 
+	changed = False
+
+	for i in range(len(wins15)):
+		dist1 = euclidean(wins15[i], wins17[i], cent1X, cent1Y)
+		dist2 = euclidean(wins15[i], wins17[i], cent2X, cent2Y)
+
+		if clusters[i] == 0:
+			changed = True
+
+		if (dist1 < dist2):
+			cluster1X.append(wins15[i])
+			cluster1Y.append(wins17[i])
+			if (clusters[i] != 1):
+				changed = True
+
+			clusters[i] = 1
+
+		else:
+			cluster2X.append(wins15[i])
+			cluster2Y.append(wins17[i])
+			if (clusters[i] != 2):
+				changed = True
+
+			clusters[i] = 2
+
+
+	if changed == False:
+		break;
+
+	cent1X = stats.mean(cluster1X)
+	cent1Y = stats.mean(cluster1Y)
+
+	cent2X = stats.mean(cluster2X)
+	cent2Y = stats.mean(cluster2Y)
+	
+	cluster1X = []
+	cluster1Y = []
+	cluster2X = []
+	cluster2Y = []
+
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+
+for i in range(len(cluster1X)):
+	ax.scatter(cluster1X[i], cluster1Y[i], c="r")
+
+for i in range(len(cluster2X)):
+	ax.scatter(cluster2X[i], cluster2Y[i], c="b")
+
+
+ax.scatter(cent1X, cent1Y, c="r", marker="x", label="Centroid Cluster 1")
+ax.scatter(cent2X, cent2Y, c="b", marker="x", label="Centroid Cluster 2")
+
+plt.xlabel("Wins in 2015")
+plt.ylabel("Wins in 2017")
+plt.title("K-Means Clustering Centroids #2")
+plt.legend(loc=5)
+plt.show()
 
 
