@@ -42,9 +42,9 @@ rank17 = []
 for k, v in data.items():
 	for key, value in data[k].items():
 		if key == "rank15":
-			rank15.append(float(value))
+			rank15.append(int(value))
 		if key == "rank17":
-			rank17.append(float(value))
+			rank17.append(int(value))
 
 cent1X = 1
 cent1Y = 1
@@ -118,6 +118,7 @@ ax.scatter(cent2X, cent2Y, c="b", marker="x", label="Centroid Cluster 2")
 
 plt.xlabel("Ranking in 2015")
 plt.ylabel("Ranking in 2017")
-plt.title("K-Means Clustering Centroids #1")
-plt.legend(loc=5)
+plt.axis([0, 25, 0, 25])
+plt.title("Q2: K-Means Clustering ")
+plt.legend(loc=1)
 plt.show()

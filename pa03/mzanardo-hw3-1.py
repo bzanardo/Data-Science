@@ -12,7 +12,6 @@ def euclidean(x1, y1, x2, y2):
 
 
 data = {}
-#k = ""
 
 with open("Dataset-clustering.txt") as f:
 	next(f)
@@ -120,7 +119,7 @@ ax.scatter(cent2X, cent2Y, c="b", marker="x", label="Centroid Cluster 2")
 
 plt.xlabel("Wins in 2015")
 plt.ylabel("Wins in 2017")
-plt.title("K-Means Clustering Centroids #1")
+plt.title("Q1: K-Means Clustering Centroids #1")
 plt.legend(loc=5)
 plt.show()
 
@@ -196,7 +195,7 @@ ax.scatter(cent2X, cent2Y, c="b", marker="x", label="Centroid Cluster 2")
 
 plt.xlabel("Wins in 2015")
 plt.ylabel("Wins in 2017")
-plt.title("K-Means Clustering Centroids #2")
+plt.title("Q1: K-Means Clustering Centroids #2")
 plt.legend(loc=5)
 plt.show()
 
