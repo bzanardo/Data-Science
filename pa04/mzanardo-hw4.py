@@ -18,20 +18,43 @@ def findCandidates(db, lenght):
 
 
 	for k, v in db.items():
-		#print(k)
-		print(k[:index])
-		print(current_item[:index])
+		i = keys.index(k) + 1
+		for j in range(i, len(keys)):
+			current_item = keys[j]
 
-		if k == current_item:
-	 		continue
+			if k == current_item:
+	 			continue
 
-		if k[:index] == current_item[:index]:
-			new_item = current_item + k[-1]
-			candidates[new_item] = list(it.combinations(list(new_item), lenght))#[current_item, k, current_item[1]+ k[1]]
-		else:
-			current_item = k
+			if k[:index] == current_item[:index]:
+				new_item = k + current_item[-1]
+				candidates[new_item] = [''.join(x) for x in it.combinations(new_item, lenght - 1)]
+			else:
+				continue
 
 	return(candidates)
+
+def prunning(candidates, db, transaction_db):
+	valid_itemset = {}
+	for k, v in candidates.items():
+		valid = True
+		for i in v:
+			if i not in db:
+				valid = False
+				break 
+			else:
+				sup = db[str(i)]
+
+			if sup < min_sup:
+				valid = False
+				break
+
+		if valid:
+			sup = getSupport(list(k), transaction_db)
+			if sup >= min_sup:
+				valid_itemset[k] = sup
+
+	return(valid_itemset)
+
 
 
 transaction_db = {}
@@ -64,40 +87,26 @@ for i in two_comb:
 		key = str(i[0]) + str(i[1])
 		two_itemset[key] = sup
 
-#candidates = {}
-#current_item = list(two_itemset.keys())[0]
-
-print(two_itemset)
 candidates = findCandidates(two_itemset, 3)
-print(candidates)
+three_itemset = prunning(candidates, two_itemset, transaction_db)
 
-# for k, v in two_itemset.items():
-# 	if k == current_item:
-# 		continue
-# 	if k[0] == current_item[0]:
-# 		new_item = current_item + k[1:]
-# 		candidates[new_item] = [current_item, k, current_item[1]+ k[1]]
-# 	else:
-# 		current_item = k
+candidates = findCandidates(three_itemset, 4)
+four_itemset = prunning(candidates, three_itemset, transaction_db)
+
+print("frequent 1-itemsets")
+for k, v in one_itemset.items():
+	print(k + ": " + str(v))
+
+print("frequent 2-itemsets")
+for k, v in two_itemset.items():
+	print(k + ": " + str(v))
+
+print("frequent 3-itemsets")
+for k, v in three_itemset.items():
+	print(k + ": " + str(v))
 
 
-# for k, v in candidates.items():
-# 	valid = True
-# 	for i in v:
-# 		if i not in two_itemset:
-# 			valid = False
-# 			break 
-# 		else:
-# 			sup = two_itemset[str(i)]
 
-# 		if sup < min_sup:
-# 			valid = False
-# 			break
-
-# 	if valid:
-# 		supp = getSupport(list(k), transaction_db)
-# 		if supp >= min_sup:
-# 			three_itemset[k] = supp
 
 
 
